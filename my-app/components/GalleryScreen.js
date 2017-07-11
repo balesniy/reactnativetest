@@ -26,35 +26,24 @@ class GalleryScreen extends React.Component {
   }
 
   render() {
-    if (this.props.loading) {
-      return (
-        <View style={{
-          flex:       1,
-          paddingTop: 20
-        }}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
     return (
       <View style={{ flex: 1 }}>
-        <Text style={{alignSelf:'center'}}>Страница {this.props.currentPage}</Text>
-
         <ListView contentContainerStyle={styles.list}
-          dataSource={this.props.data}
-          renderRow={(rowData) =>
-            <ImageElement
-              name={rowData.name}
-              user={rowData.user.username}
-              uri ={rowData.image_url}
-              onPress = {() => this._onPressButton({ id: rowData.image_url })}
-            />}
+                  dataSource={this.props.data}
+                  onEndReached={() => this.props.pageActions.fetchPage(this.props.currentPage + 1)}
+                  renderRow={(rowData) =>
+                    <ImageElement
+                      name={rowData.name}
+                      user={rowData.user.username}
+                      uri={rowData.image_url}
+                      onPress={() => this._onPressButton({ id: rowData.image_url })}
+                    />}
         />
-        <Button
-          onPress={() => {
-            this.props.pageActions.fetchPage(this.props.currentPage + 1);
-          }}
-          title={'Следующая'}/>
+        {this.props.loading ?
+         <View style={{ paddingBottom: 10 }}>
+           <ActivityIndicator />
+         </View>
+          : null}
       </View>
     )
   }
@@ -63,8 +52,8 @@ class GalleryScreen extends React.Component {
 const styles = StyleSheet.create({
   list: {
     justifyContent: 'space-between',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
+    flexDirection:  'row',
+    flexWrap:       'wrap'
   },
 });
 
